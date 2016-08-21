@@ -1,0 +1,12 @@
+Team X-Ray
+Raymond Cano
+Xilin Liu
+
+We're in 8th place! Inspired by the lecture about HoG data, we decided it would be interesting to transform our picture data into HoGs, and run softmax regression on that. This saw us take a jump from 36% to 44%! This was great but we felt that there was more that we could improve with. We used much of spring break to look into the next step: SVM. After a moderately thorough sweep of parameters for SVM (window size, c-size, gamma-size, kernel choice), we managed to put up a testing accuracy of >50%. We've enjoyed seeing our efforts show in the improvement of our score, which isn't always the case. A few hours of parameter sweeping on an SVM with an RBF kernel led to marginal improvements over our HoG softmax accuracy, which was disheartening. However, a degeree 4 polynomial kernel fit the data decently well, leading to a 10 point jump in our accuracy. 
+
+To HoGify the data, we used referenced this link here: 
+http://scikit-image.org/docs/dev/auto_examples/plot_hog.html
+
+Our next step will be to look into a Nueral Net. Many parameters need to be researched: Best neural unit function (ReLU, Sigmoid, Leaky ReLU, etc.), number of units in each layer, etc. This is seems like the next logical step in our progression. 
+
+Previously, Raymond read a bit of material from the stanford cs231n site, so we'll likely be using that as a resource for guidance on our neural nets, in addition to what we're learning in class. 

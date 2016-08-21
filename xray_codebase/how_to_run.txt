@@ -1,0 +1,28 @@
+Hey Guys!! 
+
+here's our code base for the CIFAR-10 Project.
+
+All code for non-convolutional neural nets is stored in /softmax and SVM.
+
+To run a given svm model:
+
+1) Move to_bin.py, test.py, and tf.sh into the model folder you want (Our best model was relu_1. Note: Not every folder has a model. Some models trained but failed to converge, and their models performed poorly so they were deleted. We figured we would include the code for these models anyways).
+
+2) Run tf.sh (This makes sure all your packages are up to date)
+3) Open up to_bin.py and type in the directory to your local test images
+4) Run to_bin.py (This converts all our jpgs into properly formatted bin images)
+5) Run test.py
+
+Acknowledgements: 
+
+The code skeleton for our convolutional Neural Nets was developed by Tensorflow.
+
+The motivation for using Leaky Relus comes from the discussion of SparseConvNets on the Kaggle interview site
+
+The resnet implementation follows from He, Kaiming et al. and the tensorflow resnet implementation comes from https://github.com/xuyuwei/resnet-tf.
+
+The VGG net implemented is stems from the ImageNet classification VGG network: http://www.robots.ox.ac.uk/~vgg/research/very_deep/ with batch normalization cooked in as seen here: http://torch.ch/blog/2015/07/30/cifar.html
+
+
+
+

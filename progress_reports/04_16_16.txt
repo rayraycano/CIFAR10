@@ -1,0 +1,6 @@
+After a lull in activity, team XRAY is back on the track. Recent studies in class have brought us to the core of this project: Convolutional Neural Nets. 
+We realized that trainig these nets is no small task. It is very time intensive, and as the semester comes to a close we find ourselves short on time to train, time to work on the project, but not short on ideas. 
+
+We've started out by implementing the tensorflow tutorial on convnets. Much of their code is helpful in showing us a starting point. We've utilized Amazon EC2 instances to build an AMI that can run tensorflow on GPUs and look forward to running even faster on 4 gpus after we finish our first model. As we speak, the model is being trained and looks on it's way towards 86% accuracy on test data. We can only speculate at this point however, and once the day is over we'll know for sure.
+
+Our next steps involve reseach. We'll be looking into the best approach for our next iteration of a model and hopefully use our time wisely by implementing a great solution. Some things that look promising are Dr. Ben Graham's Spatially SParse Conv Nets, the code for which he's released online. The testing error from a 2014 cifar-10 compettiton was 4.47%, so we'll definitely look to learn from what he's done to improve our solution. 

@@ -1,0 +1,48 @@
+Introduction: Done
+Considerations: Looking at previous research, discussing constraints. 
+Methods
+	OVA: Done
+		Feature augmentation
+		Hyperparameter Selection
+	SVM: Done
+		Feature augmentation
+		Hyperparameter Selection
+	CNN: 
+		Feature augmentation
+		Hyperparameter Selection
+Results: Short, discuss current status
+Conclusion:
+
+
+Your final approach (feature choice/model choice/training protocol) and your final standing in the competition.
+METHODS
+
+A discussion of how you selected/constructed features.
+METHODS
+
+A discussion of how you approached model assessment – in particular, how you controlled for overfitting.
+CONSIDERSATIONS/METHODS
+
+A discussion of how you approached model selection.
+CONSIDERATIONS
+
+A summary table of all algorithm/algorithm combinations tried, together with their performance. This should be accompanied by a discussion of why the algorithms performed as they did for this problem.
+METHODS
+
+What did your experiments reveal about the prediction problem? The data set? The algorithms?
+CONCLUSIONS
+
+How did you select the approach for your final submission?
+METHODS
+
+What lessons did you learn about solving prediction problems using machine learning and large data sets?
+CONCLUSION
+
+A list of technical references consulted during the course of the competition.
+ACKNOWLEDGEMENTS/REFERENCES
+
+A list of URLs to software built by others that you used for your experiments.
+ACKNOWLEDGEMETNS/REFERENCES
+
+A plot showing your dates of submission on the x-axis and your classification accuracy on Kaggle on the y-axis
+RESULTS

@@ -1,0 +1,3 @@
+links
+
+http://scikit-image.org/docs/dev/auto_examples/plot_hog.html

@@ -1,0 +1,9 @@
+Team X-Ray
+Raymond Cano
+Xilin Liu
+
+First Progress Report
+
+We've yet to begin any implementations. We downloaded the data set off Kaggle(It's massive!!!) and began looking into some methods of approaching this problem. On the open Kaggle competition, many of the top results utilized convolutional neural nets to accurately classify the pictures, with the top entries scoring lower error percentages than humans. The links for the reading we've done so far are given below. On fastML, there's an article on doing object recognition with Alex Krizhevsky's cuda-convnet,(http://fastml.com/object-recognition-in-images-with-cuda-convnet/) which we could possible end up using for our project once we gain some more intutionsabout how CNNs work and how we can implement and improve on their initialimplementation. 
+
+In addition, we've been looking into the Python packages we will be using for this project. In particular, we are looking into sklearn and numpy. Fortunately, we used numpy for the first homework, so we have some experience.In addition, we've used sklearn for previous related projects. More in depth analysis of the packages will be needed though.

@@ -1,0 +1,498 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Object recognition in images with cuda-convnet - FastML</title>
+  <meta name="author" content="Zygmunt Z.">
+
+	
+	<meta name="description" content="Object recognition in images is where deep learning, and specifically convolutional neural networks, are often applied and benchmarked these days. To &hellip;">
+	<meta name="keywords" content="machine learning, data analysis, data science, classification, regression, vowpal wabbit, spearmint, random forest">
+
+	<!--
+  
+  <meta name="description" content="Object recognition in images is where deep learning, and specifically convolutional neural networks, are often applied and benchmarked these days. To &hellip;">
+  
+  -->
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+	<script src="/bootstrap/js/bootstrap.js"></script>
+	<link href="/bootstrap/css/bootstrap.css" rel="stylesheet">
+
+
+  
+  <link rel="canonical" href="http://fastml.com/object-recognition-in-images-with-cuda-convnet">
+  <link href="/favicon.png" rel="icon">
+  
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="FastML" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script src="/js/jquery.cookie.js"></script>
+
+<script src="//www.google-analytics.com/cx/api.js?experiment=4rke_7QPRti2Knk7i73t6Q"></script>
+<script type="text/javascript">
+	var background = jQuery.cookie( "background" );
+	//var variation = cxApi.chooseVariation();
+</script>
+
+
+
+
+
+
+  
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-452062-21']);
+    _gaq.push(['_trackPageview']);
+  </script>
+
+  <script type="text/javascript" src="/cookie.php"></script>
+
+  <script type="text/javascript">
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      //ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      ga.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+  
+
+
+  
+  <script type="text/javascript">
+	function set_background( url ) {
+		document.body.style.backgroundImage = 'url(' + url + ')';
+		jQuery.cookie( 'background', url, { expires: 256, path: '/' } );
+		return false;
+	}
+	
+	function setCustomBackground() {
+		url = document.getElementById("custom_background_url").value;
+		set_background( url );
+		document.getElementById("backgroundModal").modal('hide');
+	}	
+</script>
+
+<style type="text/css">
+	ul.dropdown-menu a {
+		text-decoration: none;
+		//font-family: Arial;
+		font-size: smaller;
+	}	
+
+	/* followers */	
+	div.well {
+		font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+		font-size: 14px;
+		line-height: 20px;
+		color: #333333;
+		background-color: #ffffff;
+	}		
+</style>
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">FastML</a></h1>
+  
+    <h2>Machine learning made easy</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="as_sitesearch" value="fastml.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search" />
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Home</a></li>
+  <li><a href="/contents/">Contents</a></li>
+  <li id="popular"><a href="/popular/">Popular</a></li>
+  <li><a href="/links/">Links</a></li>
+  <li id="about"><a href="/about/">About</a></li>
+  <li id="backgrounds"><a href="/backgrounds/">Backgrounds</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Object recognition in images with cuda-convnet</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-11-27T17:23:00+01:00" pubdate data-updated="true">2013-11-27</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Object recognition in images is where deep learning, and specifically convolutional neural networks, are often applied and benchmarked these days. To get a piece of the action, we&#8217;ll be using Alex Krizhevsky&#8217;s <em>cuda-convnet</em>, a shining diamond of machine learning software, in a Kaggle competition.</p>
+
+<!-- more -->
+
+
+<p>Continuing to run things on a GPU, we turn to applying <a href="http://yann.lecun.com/exdb/lenet/">convolutional neural networks</a> for object recognition. This kind of network was developed by Yann LeCun and it&#8217;s powerful, but a bit complicated:</p>
+
+<p><img src="/images/cifar/lenet5.png" alt="LeNet 5 architecture" /><br />
+<span style="font-size: smaller;">Image credit: <a href="http://eblearn.cs.nyu.edu:21991/doku.php?id=beginner_tutorial2_train#convolution_networks">EBLearn tutorial</a></span></p>
+
+<p>A typical convolutional network has two parts. The first is responsible for feature extraction and consists of one or more pairs of convolution and subsampling/max-pooling layers, as you can see above. The second part is just a classic fully-connected multilayer perceptron taking extracted features as input. For a detailed explanation of all this see unit 9 in Hugo LaRochelle&#8217;s <a href="http://www.youtube.com/playlist?list=PL6Xpj9I5qXYEcOhn7TqghAJ6NAPrNmUBH">neural networks course</a>.</p>
+
+<p>Daniel Nouri has an interesting story about <a href="http://danielnouri.org/notes/2014/01/10/using-deep-learning-to-listen-for-whales/">applying convnets to audio classification</a>. His insight:</p>
+
+<blockquote><p>Convnets can have hundreds of thousands of neurons (activation units) and millions of connections between them, many more than could be learned effectively previously. This is possible because convnets share weights between connections, and thus vastly reduce the number of parameters that need to be learned.</p></blockquote>
+
+<p>As regards software, we could use pylearn2, but let&#8217;s try something else for a change: <a href="https://code.google.com/p/cuda-convnet/">cuda-convnet</a>, a fast implementation of feed-forward neural networks in C++/CUDA/Python. Its author, Alex Krizhevsky, is also the main creator of a popular benchmark dataset for object recognition: <a href="http://www.cs.toronto.edu/~kriz/cifar.html">CIFAR-10</a>. The set is a collection of 32x32 color images of cats, dogs, cars, trucks etc. - a total of 10 object classes.</p>
+
+<p><img src="/images/cifar/cifar10_samples.jpg" alt="CIFAR-10 samples" /></p>
+
+<p>It happens that there&#8217;s a <a href="http://www.kaggle.com/c/cifar-10">Kaggle competition</a> based on CIFAR-10. The training set is the same, the test set images are modified and buried among 290k other images to discourage cheating.</p>
+
+<h2>Running cuda-convnet</h2>
+
+<p>Our impression is that <em>cuda-convnet</em> feels more solid and tidy than <em>pylearn2</em>, and also quicker. It&#8217;s certainly more specialized.</p>
+
+<p>Here&#8217;s a snippet of training output:</p>
+
+<pre><code>1.1... logprob:  2.151354, 0.798000 (64.006 sec)
+1.2... logprob:  1.886476, 0.693500 (13.407 sec)
+1.3... logprob:  1.723293, 0.634800 (13.403 sec)
+1.4... logprob:  1.678299, 0.613200 (13.400 sec)
+2.1... logprob:  1.600135, 0.581400 (13.403 sec)
+</code></pre>
+
+<p>The first number is epoch, the second - batch. The software saves the model every x batches, so it&#8217;s possible to hit Ctrl-C and resume later. Then goes log probability, training error and time taken for the batch. We used a notebook with GeForce GT 650 M, as in <a href="/cuda-on-a-linux-laptop">CUDA on a linux laptop</a>.</p>
+
+<p>You can inspect training results using <a href="https://code.google.com/p/cuda-convnet/wiki/ViewingNet">shownet.py</a>.</p>
+
+<p>Worth mentioning is <a href="https://github.com/dnouri/noccn">noccn</a>, a collection of wrappers around <em>cuda-convnet</em> by Daniel Nouri. The author also provides a version of <a href="https://github.com/dnouri/cuda-convnet">cuda-convnet with dropout</a>. <em>Noccn</em> can be used to make batches and produce predictions, although it&#8217;s a tiny bit complicated so for the purposes of the task at hand we chose to roll out some simpler code.</p>
+
+<p>Our <a href="https://github.com/zygmuntz/kaggle-cifar">scripts</a> are available at Github. Aside from <em>cuda-convnet</em>, you&#8217;ll need <a href="https://pypi.python.org/pypi/natsort">natsort</a> module in Python. We use it to sort image names so that <code>2.png</code> is before <code>10.png</code>.</p>
+
+<h2>Images into batches</h2>
+
+<p>As usual, we need to figure out how to get data in and predictions out. Kaggle provides PNG images, while <em>cuda-convnet</em> expects data in form of batch files. A batch file is a pickled Python dictionary containing at least image data and labels. CIFAR batches are 10000 images each.</p>
+
+<pre><code>from PIL import Image
+image = Image.open( '1.png' )
+</code></pre>
+
+<p>Now the question is, how to convert it into a Numpy array? Turns out to be easy:</p>
+
+<pre><code>image = np.array( image )           # 32 x 32 x 3
+image = np.rollaxis( image, 2 )     # 3 x 32 x 32
+image = image.reshape( -1 )         # 3072
+</code></pre>
+
+<p>What follows the first line is to make data compatible with <a href="https://code.google.com/p/cuda-convnet/wiki/Data">cuda-convnet format</a>. Data for each RGB channel goes separately, so we need to move that axis to the front before reshaping.</p>
+
+<p>You can verify that it works by loading a train batch and printing the first row from the data array. Then you load the corresponding PNG image, process it as above, print the resulting array and compare to the original.</p>
+
+<p>Let&#8217;s make test batches:</p>
+
+<p><code>python make_test_batches.py &lt;images dir&gt; &lt;output dir&gt;</code>
+<code>python make_test_batches.py test test_batches</code></p>
+
+<p>We end up with 30 new batches that we&#8217;d like predictions for.</p>
+
+<h2>The predictions</h2>
+
+<p>How do you get predictions from <em>cuda-convnet</em>? It&#8217;s under-documented, but fortunately there&#8217;s a way. The software has a feature for writing features from a chosen layer. When you write features from the softmax layer (named <em>probs</em> in the layer definition file), you get probabilities for each class. They are saved in a batch file somewhat similiar to the training batches. The relevant command line options are:</p>
+
+<p><code>shownet.py -f &lt;path to model dir&gt; --write-features=probs --feature-path=/path/to/predictions/dir --test-range=7-36</code></p>
+
+<p>But wait&#8230; We followed the <a href="https://code.google.com/p/cuda-convnet/wiki/Methodology">procedure</a> for training the model with 13% test error. It uses 24x24 patches for training and for testing:</p>
+
+<blockquote><p>After training is done, you can kill the net and re-run it with the &#8211;test-only=1 and &#8211;multiview-test=1 arguments to compute the test error as averaged over 10 patches of the original images (4 corner patches, center patch, and their horizontal reflections). This will produce better results than testing on the center patch alone.</p></blockquote>
+
+<p>With multiview you get 12.6% error, without it - 15.4%. It seems that we&#8217;re going to use <a href="https://github.com/dnouri/noccn/blob/master/noccn/predict.py">multiview predictions</a> from <em>noccn</em>. We copied the appropriate functions to the modified <code>shownet.py</code> script.</p>
+
+<p><code>shownet.py -f &lt;path to model dir&gt; --write-predictions=/path/to/predictions/file --test-range=7-36 --multiview-test=1</code></p>
+
+<p>Afterwards we unpickle the file and for each example get an index of the most probable class:</p>
+
+<pre><code>label_names = [ 'airplane', 'automobile', 'bird',  'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck' ]
+# mapping from indexes to names
+labels_dict = { i: x for i, x in enumerate( label_names ) }
+
+d = pickle.load( open( batch_path, 'rb' ))
+label_indexes = np.argmax( d['data'], axis = 1 )    # data is 300000 x 10
+
+for i in label_indexes:
+    label = labels_dict[i]
+</code></pre>
+
+<p>This code is in the <code>predict_multiview.py</code> script, here&#8217;s how to run it:</p>
+
+<p><code>python predict_multiview.py pickled_predictions_file predictions.csv</code></p>
+
+<p>And indeed, we get 0.8756 on the <a href="http://www.kaggle.com/c/cifar-10/leaderboard">leaderboard</a>.</p>
+
+<h2>Online image classification demos</h2>
+
+<p>If you&#8217;d like your own image classified, try these online demos:</p>
+
+<ul>
+<li><a href="http://horatio.cs.nyu.edu/">http://horatio.cs.nyu.edu</a></li>
+<li><a href="http://decaf.no-ip.org/">http://decaf.no-ip.org</a></li>
+</ul>
+
+
+<p>By the way, we post such tidbits on Twitter, so consider following <a href="https://twitter.com/fastml_extra">@fastml_extra</a>.</p>
+</div>
+
+
+  
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Zygmunt Z.</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-11-27T17:23:00+01:00" pubdate data-updated="true">2013-11-27</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/kaggle/'>Kaggle</a>, <a class='category' href='/blog/categories/neural-networks/'>neural-networks</a>, <a class='category' href='/blog/categories/software/'>software</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://fastml.com/object-recognition-in-images-with-cuda-convnet/" data-via="fastml" data-counturl="http://fastml.com/object-recognition-in-images-with-cuda-convnet/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/cuda-on-a-linux-laptop/" title="Previous Post: CUDA on a Linux laptop">&laquo; CUDA on a Linux laptop</a>
+      
+      
+        <a class="basic-alignment right" href="/13-nips-papers-that-caught-our-eye/" title="Next Post: 13 NIPS papers that caught our eye">13 NIPS papers that caught our eye &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/what-is-better-gradient-boosted-trees-or-random-forest/">What is better: gradient-boosted trees, or random forest?</a>
+      </li>
+    
+      <li class="post">
+        <a href="/numerai-like-kaggle-but-with-a-clean-dataset-top-ten-in-the-money-and-recurring-payouts/">Numerai - like Kaggle, but with a clean dataset, top ten in the money, and recurring payouts</a>
+      </li>
+    
+      <li class="post">
+        <a href="/what-you-wanted-to-know-about-tensorflow/">What you wanted to know about TensorFlow</a>
+      </li>
+    
+      <li class="post">
+        <a href="/predicting-sales-pandas-vs-sql/">Predicting sales: Pandas vs SQL</a>
+      </li>
+    
+      <li class="post">
+        <a href="/an-excerpt-from-the-master-algorithm/">An excerpt from The Master Algorithm</a>
+      </li>
+    
+      <li class="post">
+        <a href="/evaluating-recommender-systems/">Evaluating recommender systems</a>
+      </li>
+    
+      <li class="post">
+        <a href="/deep-nets-generating-stuff/">Deep nets generating stuff</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>Twitter</h1>
+  
+  <p>Follow <a href="http://twitter.com/fastml">@fastml</a> for notifications about new posts.</p>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("fastml", 0, true);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  <a href="http://twitter.com/fastml" class="twitter-follow-button" data-show-count="true">Follow @fastml</a>
+
+	<br /><br />
+	
+	Also check out <a href="https://twitter.com/fastml_extra">@fastml_extra</a> for things related to machine learning and data science in general.
+	
+</section>
+
+
+<section>
+  <h1>GitHub</h1>
+  
+  <p>Most articles come with some <a href="/blog/categories/code/">code</a>. We push it to Github.</p>
+  
+  
+  <a href="https://github.com/zygmuntz">https://github.com/zygmuntz</a>
+    
+
+</section>
+
+<section id="moviemood">
+  <h1>MovieMood</h1>
+  
+  <p>MovieMood is our fast interactive movie recommender, introduced in this <a href="/real-time-interactive-movie-recommendation/">article</a>. It enables rapid movie discovery. Check out the September beta.</p> 
+  
+  <a href="http://moviemood.co/">http://moviemood.co</a>
+
+</section>
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2016 - Zygmunt Z. -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'fastml';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://fastml.com/object-recognition-in-images-with-cuda-convnet/';
+        var disqus_url = 'http://fastml.com/object-recognition-in-images-with-cuda-convnet/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+<script type="text/javascript">
+	background = jQuery.cookie( "background" );	// set in head (google_experiments)
+	if ( background ) {
+		set_background( background );
+	}
+</script>
+
+
+</body>
+</html>
